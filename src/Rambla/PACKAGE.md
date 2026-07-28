@@ -51,7 +51,8 @@ reduction.
 - Opt-in coalescing metrics.
 
 The core is `netstandard2.0` and **never references `Dispatcher`**. For WPF, add
-the **[`Rambla.Wpf`](https://www.nuget.org/packages/Rambla.Wpf)** adapter.
+the **[`Rambla.Wpf`](https://www.nuget.org/packages/Rambla.Wpf)** adapter; for
+Avalonia, **[`Rambla.Avalonia`](https://www.nuget.org/packages/Rambla.Avalonia)**.
 
 ## When *not* to use it
 

@@ -114,7 +114,7 @@ worker writes → dirty state → coalesce → UI flush (~16 ms) → batched not
   error, and a cancel command. Opt into latest-wins with `CancelPrevious = true`
   (an as-you-type search cancels the request it replaces).
 - **Framework-neutral scheduling** — the core never references `Dispatcher`;
-  integration is an `IStateScheduler` adapter (WPF ships today).
+  integration is an `IStateScheduler` adapter (WPF and Avalonia ship today).
 - **Bounded refresh rate** — wrap any scheduler in `ThrottlingStateScheduler` (or
   call `DispatcherStateScheduler.InstallThrottledAsDefault()`) and flushes reach
   the UI at most `MaxRefreshRate` times a second, no matter how fast the feed
@@ -197,8 +197,8 @@ Rambla owns a smaller, sharper problem:
 | `Rambla`            | Framework-agnostic core state engine           |
 | `Rambla.Diagnostics`| Live diagnostics (`StateDiagnostics.Attach`)   |
 | `Rambla.Wpf`        | WPF dispatcher scheduler adapter               |
+| `Rambla.Avalonia`   | Avalonia dispatcher scheduler adapter          |
 | `Rambla.WinUI`      | WinUI 3 adapter *(planned)*                     |
-| `Rambla.Avalonia`   | Avalonia adapter *(planned)*                   |
 
 The core never references `Dispatcher`. Framework integration is an adapter
 behind `IStateScheduler`.
@@ -233,10 +233,12 @@ it live.
 Early but real: the core state engine (writes, batching, coalescing, schedulers,
 opt-in metrics) is implemented, its V1 semantics are **frozen**
 ([SEMANTICS.md](./SEMANTICS.md)), and it is covered by unit + concurrency stress
-tests. The WPF adapter and the market dashboard demo run. The **`[State]` source
-generator (V1)** ships and is dogfooded by the demo. High-frequency collections
-(**`RamblaList<T>`**, **`RamblaDictionary<K,V>`**) and the **`Rambla.Diagnostics`**
-package are shipped. Next: async state lifecycle (Phase 3). See
+tests. The **WPF** and **Avalonia** adapters and the market dashboard demo run.
+The **`[State]`** and **`[StateCommand]`** source generators ship and are
+dogfooded by the demo. High-frequency collections (**`RamblaList<T>`**,
+**`RamblaDictionary<K,V>`**), the **`Rambla.Diagnostics`** package, the
+**throttling scheduler** (`MaxRefreshRate`) and **async state commands** are
+shipped. Next: the remaining framework adapters (Phase 5). See
 [ROADMAP.md](./ROADMAP.md) for phases and
 [VISION.md](./VISION.md) for the thesis. Contributors: read
 [GUIDELINES.md](./GUIDELINES.md) first.

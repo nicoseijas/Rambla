@@ -137,11 +137,12 @@ an observable, provable one.
 WPF overlay control (currently console/programmatic only); dropped-intermediate
 counting per property.
 
-## Phase 5 — Framework adapters
+## Phase 5 — Framework adapters — **in progress**
 
-- `Rambla.Wpf` — `DispatcherStateScheduler` (first, ships alongside MVP demo)
+- `Rambla.Wpf` ✅ — `DispatcherStateScheduler` (ships alongside the MVP demo)
+- `Rambla.Avalonia` ✅ — the same adapter over Avalonia's `IDispatcher`, built
+  against 11.0 (the floor) and usable from 11.x and 12.x
 - `Rambla.WinUI`
-- `Rambla.Avalonia`
 - Possibly `Rambla.Maui`
 
 The core never learns about `Dispatcher`; each adapter only implements

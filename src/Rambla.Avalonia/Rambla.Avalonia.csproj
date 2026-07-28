@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Rambla.Avalonia</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>Rambla.Avalonia</PackageId>
+    <Description>Avalonia dispatcher adapter for Rambla. Marshals coalesced state flushes onto the UI thread via the Avalonia Dispatcher.</Description>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+    <!-- The minimum supported Avalonia. Referencing the floor rather than the
+         latest keeps 11.x apps usable; NuGet unifies upward for 12.x consumers,
+         and the IDispatcher surface this adapter uses is identical in both. -->
+    <PackageReference Include="Avalonia" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rambla\Rambla.csproj" />
+  </ItemGroup>
+
+</Project>

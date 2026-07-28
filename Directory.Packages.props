@@ -13,6 +13,11 @@
     <!-- Packaging: SourceLink for step-into-source debugging from the symbol package -->
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
 
+    <!-- UI adapters: the *minimum* Avalonia the adapter supports, not the latest.
+         A consumer on 11.x keeps working and one on 12.x unifies upward; the
+         IDispatcher API the adapter uses is unchanged across both. -->
+    <PackageVersion Include="Avalonia" Version="11.0.0" />
+
     <!-- Testing -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="xunit" Version="2.9.2" />
