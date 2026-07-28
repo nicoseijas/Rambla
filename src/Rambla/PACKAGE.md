@@ -36,6 +36,9 @@ reduction.
 - The `RamblaState` engine: thread-safe `SetField`, `BeginUpdate` batching,
   coalesced flush.
 - The `[State]` source generator.
+- `AsyncStateCommand` and the `[StateCommand]` generator: an async command with
+  its run lifecycle — busy flag, captured error, cancel command, and optional
+  latest-wins (`CancelPrevious`).
 - `RamblaList<T>`: a high-frequency observable collection — thread-safe writes,
   one coalesced flush raising the minimum `CollectionChanged` events
   (`Batch`, `ReplaceSnapshot` with a minimal diff, single-`Reset` fallback).

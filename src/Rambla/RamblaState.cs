@@ -76,6 +76,74 @@ public abstract class RamblaState : INotifyPropertyChanged
         Interlocked.Read(ref _notifications));
 
     /// <summary>
+    /// The scheduler this state posts its flushes to. Exposed so state that lives
+    /// beside the properties — an <see cref="AsyncStateCommand"/>, for instance —
+    /// reaches the UI through the same context.
+    /// </summary>
+    protected IStateScheduler Scheduler => _scheduler;
+
+    /// <summary>
+    /// Marks a property dirty without writing a backing field, so a computed
+    /// property (one whose value lives elsewhere) notifies through the same
+    /// coalesced flush as any other. Safe to call from any thread.
+    /// </summary>
+    /// <remarks>
+    /// The engine cannot tell whether the underlying value really changed, so
+    /// every call counts as a mutation and notifies on the next flush — unlike
+    /// <see cref="SetField{T}"/>, which drops no-op writes (SEMANTICS.md §3).
+    /// Group several with <see cref="BeginUpdate"/> to keep them in one pass.
+    /// </remarks>
+    protected void MarkDirty(string propertyName)
+    {
+        if (propertyName is null)
+        {
+            throw new ArgumentNullException(nameof(propertyName));
+        }
+
+        bool schedule;
+        lock (_gate)
+        {
+            _dirty.Add(propertyName);
+            schedule = TryArmFlushNoLock();
+        }
+
+        if (_collectMetrics)
+        {
+            Interlocked.Increment(ref _mutations);
+        }
+
+        NotifyProbesOfMutation(propertyName);
+
+        if (schedule)
+        {
+            ScheduleFlush();
+        }
+    }
+
+    /// <summary>
+    /// Returns <paramref name="command"/>, creating it once via
+    /// <paramref name="factory"/> if it is still null. Used by the
+    /// <c>[StateCommand]</c> generator: a command needs <see cref="Scheduler"/>,
+    /// which a field initializer cannot see (those run before the base
+    /// constructor), so commands are built on first access instead.
+    /// </summary>
+    protected AsyncStateCommand EnsureCommand(ref AsyncStateCommand? command, Func<AsyncStateCommand> factory)
+    {
+        if (factory is null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+
+        // Reuses the state's lock rather than paying for a second one in every
+        // instance. Monitor is reentrant, so a factory that touches this state
+        // cannot deadlock itself.
+        lock (_gate)
+        {
+            return command ??= factory();
+        }
+    }
+
+    /// <summary>
     /// Assigns <paramref name="value"/> to <paramref name="field"/> if it changed,
     /// marks the property dirty, and (unless inside a batch) schedules a flush.
     /// Safe to call from any thread.
@@ -106,25 +174,7 @@ public abstract class RamblaState : INotifyPropertyChanged
             Interlocked.Increment(ref _mutations);
         }
 
-        IStateProbe[]? probes = Volatile.Read(ref _probes);
-        if (probes is not null)
-        {
-            for (int i = 0; i < probes.Length; i++)
-            {
-                // A probe is a pure observer and is documented to never throw. If
-                // one does anyway, isolate it: a misbehaving diagnostics probe must
-                // never prevent the flush below from being scheduled (which would
-                // silently and permanently wedge notifications for this instance).
-                try
-                {
-                    probes[i].OnMutation(propertyName);
-                }
-                catch
-                {
-                    // Swallowed by contract: observers cannot affect engine behaviour.
-                }
-            }
-        }
+        NotifyProbesOfMutation(propertyName);
 
         // Post outside the lock: an ImmediateStateScheduler runs the flush
         // synchronously, and raising notifications must never happen while _gate
@@ -135,6 +185,31 @@ public abstract class RamblaState : INotifyPropertyChanged
         }
 
         return true;
+    }
+
+    private void NotifyProbesOfMutation(string propertyName)
+    {
+        IStateProbe[]? probes = Volatile.Read(ref _probes);
+        if (probes is null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < probes.Length; i++)
+        {
+            // A probe is a pure observer and is documented to never throw. If one
+            // does anyway, isolate it: a misbehaving diagnostics probe must never
+            // prevent the flush from being scheduled (which would silently and
+            // permanently wedge notifications for this instance).
+            try
+            {
+                probes[i].OnMutation(propertyName);
+            }
+            catch
+            {
+                // Swallowed by contract: observers cannot affect engine behaviour.
+            }
+        }
     }
 
     /// <summary>

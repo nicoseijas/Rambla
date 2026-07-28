@@ -94,13 +94,23 @@ DynamicData. We only make the collection → UI boundary cheap.
 **Not yet:** `Move` events (reorders are reported as replacements in V1);
 per-property diagnostics for collections.
 
-## Phase 3 — Async lifecycle
+## Phase 3 — Async lifecycle — **shipped (V1)**
 
-- `AsyncStateCommand` / `[StateCommand]`
-- Auto-generated busy/error state (`IsRefreshing`, `RefreshError`)
-- Auto-generated cancel command
-- Latest-wins with `CancelPrevious = true` (e.g. as-you-type search cancels the
+- `AsyncStateCommand` / `[StateCommand]` ✅
+- Auto-generated busy/error state (`IsRefreshing`, `RefreshError`) ✅ — projections
+  over the command, marked dirty on each transition so they notify through the
+  same coalesced flush as any other property
+- Auto-generated cancel command ✅ (`CancelRefreshCommand`)
+- Latest-wins with `CancelPrevious = true` ✅ (e.g. as-you-type search cancels the
   prior request)
+
+The busy name is derived by an English `-ing` rule (`Save` → `IsSaving`,
+`Submit` → `IsSubmitting`); `[StateCommand(BusyName = "...")]` overrides it where
+it reads wrong, alongside `Name` and `ErrorName`.
+
+**Not yet:** `Task<T>`-returning methods, command parameters, a `CanExecute`
+binding to a state property (the runtime `canExecute` delegate exists; the
+generator does not wire one).
 
 **Scope guard:** this complements, not replaces, CommunityToolkit's
 `AsyncRelayCommand`. It exists only where concurrent *state* lifecycle adds

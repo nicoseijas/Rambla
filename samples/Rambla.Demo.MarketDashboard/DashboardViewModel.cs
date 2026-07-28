@@ -19,7 +19,7 @@ namespace Rambla.Demo.MarketDashboard;
 /// <see cref="RamblaState"/> for its own stat properties (updated on the UI
 /// thread, so the immediate scheduler is exactly right).
 /// </summary>
-public sealed class DashboardViewModel : RamblaState
+public sealed partial class DashboardViewModel : RamblaState
 {
     private static readonly double TicksToMs = 1000.0 / Stopwatch.Frequency;
 
@@ -120,7 +120,13 @@ public sealed class DashboardViewModel : RamblaState
         }
     }
 
-    public async Task StartAsync()
+    /// <summary>
+    /// Generates StartCommand / IsStarting / StartError / CancelStartCommand. The
+    /// command disables itself while it runs, which is why the buttons need no
+    /// IsEnabled juggling in code-behind.
+    /// </summary>
+    [StateCommand]
+    private async Task StartAsync()
     {
         await StopAsync().ConfigureAwait(true);
 
@@ -137,7 +143,9 @@ public sealed class DashboardViewModel : RamblaState
             + (_mode == FeedMode.RamblaCoalesced ? $" · {_refreshHz} Hz" : string.Empty);
     }
 
-    public async Task StopAsync()
+    /// <summary>Generates StopCommand / IsStopping / StopError / CancelStopCommand.</summary>
+    [StateCommand]
+    private async Task StopAsync()
     {
         if (_feed is not null)
         {

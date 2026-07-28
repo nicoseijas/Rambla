@@ -71,6 +71,24 @@ No `Dispatcher.Invoke`, no `OnPropertyChanged(...)`, no
 `SynchronizationContext.Post(...)`. Rambla already knows where and when to
 notify.
 
+The work that *fetches* the state gets the same treatment. Annotate an async
+method and the generator emits the command plus the state that describes its run:
+
+```csharp
+public partial class SearchViewModel : RamblaState
+{
+    // → SearchCommand, IsSearching, SearchError, CancelSearchCommand
+    [StateCommand(CancelPrevious = true)]
+    private async Task SearchAsync(CancellationToken token)
+        => Results = await _api.SearchAsync(Query, token);
+}
+```
+
+`CancelPrevious` is latest-wins: each keystroke cancels the request it replaces.
+Failures land in `SearchError` instead of crashing an `async void` handler, and
+cancelling is not a failure. Bind the button to `SearchCommand` — it disables
+itself while the run is in flight.
+
 Instead of `4 dispatcher calls → 4 PropertyChanged → 4 binding passes`, the
 runtime does:
 
@@ -91,6 +109,10 @@ worker writes → dirty state → coalesce → UI flush (~16 ms) → batched not
   that.)
 - **`[State]` source generator** — annotate a backing field, get an observable
   property routed through the batching/coalescing engine.
+- **`[StateCommand]` async commands** — annotate an async method, get an
+  `AsyncStateCommand` plus the state that describes its run: busy flag, last
+  error, and a cancel command. Opt into latest-wins with `CancelPrevious = true`
+  (an as-you-type search cancels the request it replaces).
 - **Framework-neutral scheduling** — the core never references `Dispatcher`;
   integration is an `IStateScheduler` adapter (WPF ships today).
 - **Bounded refresh rate** — wrap any scheduler in `ThrottlingStateScheduler` (or
@@ -117,8 +139,6 @@ worker writes → dirty state → coalesce → UI flush (~16 ms) → batched not
   scheduler-wide ceiling, `MaxRefreshRate`, ships today.)*
 - **Priorities** *(planned)* — a framework-neutral abstraction over dispatcher
   priority levels, so real-time data outranks background text.
-- **Async state commands** *(planned)* — commands with built-in busy/error/cancel
-  lifecycle and latest-wins semantics.
 
 ## The flagship: diagnostics
 

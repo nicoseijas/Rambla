@@ -92,6 +92,45 @@ a deferred `ManualStateScheduler`.
 This is a deliberate V1 decision to keep the base class free of accidental
 lifecycle. If disposal is ever needed, it will be an explicit, additive opt-in.
 
+## Async commands — `AsyncStateCommand`
+
+An `ICommand` with a run lifecycle. It adds no `RamblaState` semantics — the
+generated busy/error members are ordinary properties marked dirty through
+`MarkDirty`, so §1–§5 apply to them unchanged — but the run itself has rules:
+
+1. **One run at a time.** By default `CanExecute` is false while a run is in
+   flight, so a second invocation is refused (the bound button disables itself).
+   With `CancelPrevious` it is **latest-wins** instead: the new invocation cancels
+   the one in flight and replaces it, and `CanExecute` stays true.
+2. **A superseded run cannot publish.** The cancelled run still owns its teardown,
+   but on completing it sees it is no longer current and writes neither `Error`
+   nor `IsRunning = false` — only the latest run's outcome is observable.
+3. **Failures are captured, not thrown.** An exception from the body lands in
+   `Error`; it never propagates to the invoker (an `ICommand` is invoked from a UI
+   gesture with nobody to catch it) and never surfaces as an unobserved task
+   exception. `Error` is cleared when the next run starts. This is deliberately
+   *not* §1's fail-fast: the failure has a place to be seen.
+4. **Cancellation is not a failure.** An `OperationCanceledException` from the
+   command's own token leaves `Error` null.
+5. **`CanExecuteChanged` is marshaled and coalesced.** It is raised through the
+   scheduler, so a run that completes on a worker thread still notifies WPF on the
+   UI thread; several transitions inside one scheduler window raise it once.
+   `StateChanged`, in contrast, fires synchronously on the thread the transition
+   happened on — that is what lets the owning state mark its projections dirty
+   immediately.
+6. **Commands are built on first access** (`RamblaState.EnsureCommand`), because a
+   field initializer runs before the base constructor and could not see
+   `Scheduler`.
+7. **No teardown**, consistent with §6: the command owns a `CancellationTokenSource`
+   per run and disposes it when that run ends, and nothing else. A run in flight
+   keeps running when the view goes away — cancel it if that matters.
+
+*Tested:* `AsyncStateCommandTests` — the run policy under both concurrency modes,
+superseded runs, captured failures, cancellation, the cancel command's gate,
+scheduler marshaling and coalescing, and the busy/error projections notifying
+through a state flush. The generated shape is covered by `CommandGeneratorTests`,
+which compiles the emitted code against the real assembly.
+
 ## Throttling — `ThrottlingStateScheduler`
 
 An `IStateScheduler` decorator that bounds how often flushes reach the UI. It

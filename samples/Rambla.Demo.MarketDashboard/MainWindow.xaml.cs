@@ -19,26 +19,13 @@ public partial class MainWindow : Window
 
     private void OnRendering(object? sender, EventArgs e) => _viewModel.OnRendering();
 
-    private async void StartButton_Click(object sender, RoutedEventArgs e)
-    {
-        StartButton.IsEnabled = false;
-        try
-        {
-            await _viewModel.StartAsync();
-        }
-        finally
-        {
-            StartButton.IsEnabled = true;
-        }
-    }
-
-    private async void StopButton_Click(object sender, RoutedEventArgs e)
-        => await _viewModel.StopAsync();
+    // Start/Stop are bound to the [StateCommand]-generated commands, so there is
+    // no click handler and no IsEnabled bookkeeping here.
 
     protected override async void OnClosed(EventArgs e)
     {
         CompositionTarget.Rendering -= OnRendering;
-        await _viewModel.StopAsync();
+        await _viewModel.StopCommand.ExecuteAsync();
         base.OnClosed(e);
     }
 }

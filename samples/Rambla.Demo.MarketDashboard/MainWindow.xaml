@@ -56,9 +56,10 @@
                 <TextBlock Text="Refresh Hz" Style="{StaticResource StatLabel}" VerticalAlignment="Center" Margin="0,0,6,0" />
                 <TextBox Width="60" Text="{Binding RefreshHz, UpdateSourceTrigger=LostFocus}" Margin="0,0,16,0" />
 
-                <Button x:Name="StartButton" Content="Start" Width="90" Click="StartButton_Click"
+                <!-- [StateCommand]-generated commands: they disable themselves while running. -->
+                <Button x:Name="StartButton" Content="Start" Width="90" Command="{Binding StartCommand}"
                         Background="#238636" Foreground="White" BorderThickness="0" Padding="0,4" Margin="0,0,8,0" />
-                <Button x:Name="StopButton" Content="Stop" Width="90" Click="StopButton_Click"
+                <Button x:Name="StopButton" Content="Stop" Width="90" Command="{Binding StopCommand}"
                         Background="#B62324" Foreground="White" BorderThickness="0" Padding="0,4" />
             </WrapPanel>
         </Border>
