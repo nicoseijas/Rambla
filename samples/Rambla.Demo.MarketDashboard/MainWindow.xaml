@@ -101,9 +101,12 @@
                 <StackPanel>
                     <TextBlock Text="FLUSH p95 / p99" Style="{StaticResource StatLabel}" />
                     <TextBlock Style="{StaticResource StatValue}">
-                        <Run Text="{Binding FlushP95Ms, StringFormat={}{0:N2}}" />
+                        <!-- Mode=OneWay is required: unlike TextBlock.Text, Run.Text binds
+                             TwoWay by default, and these stats are read-only (private setter),
+                             which throws as soon as the binding attaches. -->
+                        <Run Text="{Binding FlushP95Ms, Mode=OneWay, StringFormat={}{0:N2}}" />
                         <Run Text=" / " Foreground="#8B949E" />
-                        <Run Text="{Binding FlushP99Ms, StringFormat={}{0:N2}}" />
+                        <Run Text="{Binding FlushP99Ms, Mode=OneWay, StringFormat={}{0:N2}}" />
                         <Run Text=" ms" Foreground="#8B949E" FontSize="12" />
                     </TextBlock>
                 </StackPanel>
