@@ -273,6 +273,80 @@ public sealed class AsyncStateCommandTests
         command.Error.Should().BeOfType<InvalidOperationException>();
     }
 
+    [Fact]
+    public void State_changes_come_back_to_the_context_the_command_was_invoked_on()
+    {
+        // Regression: the run used to resume on a thread pool thread, so with an
+        // inline scheduler CanExecuteChanged was raised off the UI thread. WPF
+        // throws there, the exception vanished into the fire-and-forget Execute,
+        // and the bound button stayed disabled forever.
+        PumpingSynchronizationContext context = new();
+        SynchronizationContext? previous = SynchronizationContext.Current;
+        SynchronizationContext.SetSynchronizationContext(context);
+
+        try
+        {
+            TaskCompletionSource<object?> gate = new();
+            AsyncStateCommand command = new(_ => gate.Task, scheduler: ImmediateStateScheduler.Instance);
+            int invokedOn = Environment.CurrentManagedThreadId;
+            List<int> raisedOn = new();
+            command.CanExecuteChanged += (_, _) => raisedOn.Add(Environment.CurrentManagedThreadId);
+
+            Task run = command.ExecuteAsync();
+
+            // Complete the work from somewhere else entirely, as a real background
+            // operation does.
+            Task.Run(() => gate.SetResult(null));
+
+            context.PumpUntil(run, TimeSpan.FromSeconds(10));
+
+            run.IsCompleted.Should().BeTrue();
+            command.IsRunning.Should().BeFalse();
+            raisedOn.Should().OnlyContain(id => id == invokedOn,
+                "every notification must reach the thread the command was invoked on");
+            command.CanExecute(null).Should().BeTrue();
+        }
+        finally
+        {
+            SynchronizationContext.SetSynchronizationContext(previous);
+        }
+    }
+
+    /// <summary>
+    /// A minimal stand-in for a UI thread: it queues posted callbacks and only
+    /// runs them when the owning thread pumps, exactly as a dispatcher does.
+    /// </summary>
+    private sealed class PumpingSynchronizationContext : SynchronizationContext
+    {
+        private readonly System.Collections.Concurrent.ConcurrentQueue<(SendOrPostCallback Callback, object? State)> _queue = new();
+
+        public override void Post(SendOrPostCallback d, object? state) => _queue.Enqueue((d, state));
+
+        public override void Send(SendOrPostCallback d, object? state) => d(state);
+
+        /// <summary>Runs queued callbacks until <paramref name="until"/> completes.</summary>
+        public void PumpUntil(Task until, TimeSpan timeout)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            while (!until.IsCompleted && clock.Elapsed < timeout)
+            {
+                if (_queue.TryDequeue(out (SendOrPostCallback Callback, object? State) work))
+                {
+                    work.Callback(work.State);
+                }
+                else
+                {
+                    Thread.Sleep(1);
+                }
+            }
+
+            while (_queue.TryDequeue(out (SendOrPostCallback Callback, object? State) rest))
+            {
+                rest.Callback(rest.State);
+            }
+        }
+    }
+
     // --- integration with a state, the shape [StateCommand] generates ---
 
     [Fact]

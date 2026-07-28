@@ -112,9 +112,17 @@ generated busy/error members are ordinary properties marked dirty through
    *not* §1's fail-fast: the failure has a place to be seen.
 4. **Cancellation is not a failure.** An `OperationCanceledException` from the
    command's own token leaves `Error` null.
-5. **`CanExecuteChanged` is marshaled and coalesced.** It is raised through the
-   scheduler, so a run that completes on a worker thread still notifies WPF on the
-   UI thread; several transitions inside one scheduler window raise it once.
+5. **The run resumes where it was invoked.** The command does not suppress the
+   synchronization context around the work (no `ConfigureAwait(false)`), so a
+   command invoked from the UI thread publishes `IsRunning`, `Error` and
+   `CanExecuteChanged` on the UI thread — whatever the state's scheduler does.
+   This is deliberate and the opposite of the usual library default: with an
+   inline scheduler (`ImmediateStateScheduler`, which a UI-thread-owned state
+   legitimately uses) a suppressed context raises `CanExecuteChanged` on a thread
+   pool thread, where WPF throws and the exception is lost inside a
+   fire-and-forget `Execute` — leaving the bound button disabled forever.
+   Notifications are then still posted through the scheduler and coalesced:
+   several transitions inside one scheduler window raise `CanExecuteChanged` once.
    `StateChanged`, in contrast, fires synchronously on the thread the transition
    happened on — that is what lets the owning state mark its projections dirty
    immediately.

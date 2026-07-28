@@ -173,7 +173,16 @@ public sealed class AsyncStateCommand : ICommand
     {
         try
         {
-            await _execute(source.Token).ConfigureAwait(false);
+            // Deliberately NOT ConfigureAwait(false), the usual library default:
+            // the teardown below publishes UI-facing state (IsRunning, Error,
+            // CanExecuteChanged). Suppressing the context resumes it on a thread
+            // pool thread, and a scheduler that runs flushes inline — the
+            // ImmediateStateScheduler a UI-thread-owned state legitimately uses —
+            // would then raise CanExecuteChanged off the UI thread, where WPF
+            // throws and the exception is lost in a fire-and-forget Execute.
+            // Resuming on the context the command was invoked from keeps the run's
+            // observable state on that thread whatever the scheduler does.
+            await _execute(source.Token);
         }
         catch (OperationCanceledException) when (source.IsCancellationRequested)
         {
