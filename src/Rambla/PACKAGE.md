@@ -42,6 +42,9 @@ reduction.
 - `RamblaDictionary<K,V>`: the keyed companion — insertion-ordered entries,
   latest-value-wins per key, same coalesced minimum-diff flush.
 - `IStateScheduler` with immediate + synchronization-context implementations.
+- `ThrottlingStateScheduler`: a decorator that caps flushes at
+  `MaxRefreshRate` per second (default 60), releasing the first update after an
+  idle period immediately and pacing bursts.
 - Opt-in coalescing metrics.
 
 The core is `netstandard2.0` and **never references `Dispatcher`**. For WPF, add

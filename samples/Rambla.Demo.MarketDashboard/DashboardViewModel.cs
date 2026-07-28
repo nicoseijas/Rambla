@@ -9,6 +9,7 @@ using Rambla.Demo.MarketDashboard.Feed;
 using Rambla.Demo.MarketDashboard.Model;
 using Rambla.Demo.MarketDashboard.Scheduling;
 using Rambla.Scheduling;
+using Rambla.Wpf;
 
 namespace Rambla.Demo.MarketDashboard;
 
@@ -30,7 +31,7 @@ public sealed class DashboardViewModel : RamblaState
     private readonly DispatcherTimer _lagProbe;
 
     private SyntheticFeed? _feed;
-    private ThrottledDispatcherScheduler? _throttled;
+    private ThrottlingStateScheduler? _throttled;
     private ISymbolRow? _canary;
 
     private long _lagLastTicks;
@@ -188,7 +189,9 @@ public sealed class DashboardViewModel : RamblaState
 
     private IStateScheduler BuildCoalescingScheduler()
     {
-        _throttled = new ThrottledDispatcherScheduler(_dispatcher, _refreshHz);
+        // The library's own throttling scheduler, wrapping the WPF adapter: this
+        // is exactly what a consumer writes (or gets from InstallThrottledAsDefault).
+        _throttled = new ThrottlingStateScheduler(new DispatcherStateScheduler(_dispatcher), _refreshHz);
         return new MeteringScheduler(_throttled, _metrics);
     }
 

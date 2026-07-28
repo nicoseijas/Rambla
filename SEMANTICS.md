@@ -83,14 +83,46 @@ a deferred `ManualStateScheduler`.
 `RamblaState` **owns no resources** and is intentionally **not `IDisposable`**.
 
 - It does not own or dispose its `IStateScheduler`; scheduler lifetime is the
-  **caller's** responsibility. (A disposable scheduler such as the demo's
-  `ThrottledDispatcherScheduler` is owned by whoever created it.)
+  **caller's** responsibility. (A disposable scheduler such as
+  `ThrottlingStateScheduler` is owned by whoever created it.)
 - There is no teardown step. A `RamblaState` that is no longer referenced is
   simply collected. Writes from a background thread to a still-referenced state
   remain valid; there is no "closed" state in V1.
 
 This is a deliberate V1 decision to keep the base class free of accidental
 lifecycle. If disposal is ever needed, it will be an explicit, additive opt-in.
+
+## Throttling — `ThrottlingStateScheduler`
+
+An `IStateScheduler` decorator that bounds how often flushes reach the UI. It
+adds no `RamblaState` semantics — everything above holds unchanged — but it makes
+guarantees of its own:
+
+1. **The rate is a ceiling.** At most `MaxRefreshRate` releases per second. The
+   interval is rounded *up* from `1/rate`, and the OS timer resolution can only
+   make the effective rate lower, never higher.
+2. **Leading edge.** The first post after an idle interval is released
+   immediately, on the calling thread, so a sporadic update is not delayed by a
+   full interval. Only a burst is paced.
+3. **No flush is dropped.** Every posted flush runs — in the current release or a
+   later one. A flush re-posted *while a release is draining* waits for the next
+   interval instead of extending the current pass (the UI thread gets its frame
+   back). Because a lost flush would leave its state armed and silently stop
+   notifying, `Post` after `Dispose` **throws** rather than dropping.
+4. **Failures follow §1.** A `PropertyChanged` subscriber that throws aborts the
+   pass and propagates (fail-fast), but the flushes queued behind it are re-armed
+   and released in the next interval instead of being stranded. If the *inner*
+   scheduler rejects the post, the release is disarmed so a later post retries;
+   the rejection propagates to the writer when the post came from a write, and is
+   swallowed when it came from the timer thread (where an escaping exception
+   would take the process down and there is no writer to report it to).
+5. **Ownership.** It owns a timer and must be disposed by its creator (§6);
+   flushes still queued at `Dispose` are dropped, so stop the writers first.
+
+*Tested:* `ThrottlingSchedulerTests` — leading-edge release, burst collapsing into
+one pass at the window boundary, re-posts deferred to the next window, a throwing
+flush not stranding the queue, the rate ceiling over a simulated second and under
+a real timer, concurrent writers, and disposal.
 
 ## Cross-thread reads — stale, and possibly torn for wide types
 

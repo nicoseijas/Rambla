@@ -8,6 +8,8 @@ namespace Rambla;
 /// </summary>
 public sealed class RamblaOptions
 {
+    private int _maxRefreshRate = 60;
+
     /// <summary>The ambient options used when a state is created without an explicit scheduler.</summary>
     public static RamblaOptions Default { get; } = new();
 
@@ -19,11 +21,28 @@ public sealed class RamblaOptions
     public IStateScheduler Scheduler { get; set; } = ImmediateStateScheduler.Instance;
 
     /// <summary>
-    /// Upper bound, in flushes per second, that a throttling scheduler should
-    /// enforce. Reserved for the coalescing scheduler (Phase 1); not yet applied
-    /// by the immediate/synchronization-context schedulers.
+    /// Upper bound, in flushes per second, applied by a
+    /// <see cref="ThrottlingStateScheduler"/> constructed without an explicit
+    /// rate. Read at construction time, so changing it later does not re-pace a
+    /// scheduler that already exists. Plain schedulers
+    /// (<see cref="ImmediateStateScheduler"/>, <see cref="SynchronizationContextStateScheduler"/>,
+    /// the dispatcher adapter) do not throttle — wrap them to opt in.
     /// </summary>
-    public int MaxRefreshRate { get; set; } = 60;
+    /// <exception cref="ArgumentOutOfRangeException">The value is not greater than zero.</exception>
+    public int MaxRefreshRate
+    {
+        get => _maxRefreshRate;
+        set
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(value), value, "The refresh rate must be greater than zero.");
+            }
+
+            _maxRefreshRate = value;
+        }
+    }
 
     /// <summary>
     /// Default for whether new <see cref="RamblaState"/> instances collect

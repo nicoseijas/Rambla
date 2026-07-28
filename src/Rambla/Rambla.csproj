@@ -15,6 +15,12 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- The throttling scheduler's time seam is internal so tests can drive the
+       refresh window deterministically instead of sleeping. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Rambla.Tests" />
+  </ItemGroup>
+
   <!-- Apply the source generator while building Rambla itself. -->
   <ItemGroup>
     <ProjectReference Include="..\Rambla.Generators\Rambla.Generators.csproj"

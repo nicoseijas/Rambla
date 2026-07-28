@@ -93,6 +93,10 @@ worker writes → dirty state → coalesce → UI flush (~16 ms) → batched not
   property routed through the batching/coalescing engine.
 - **Framework-neutral scheduling** — the core never references `Dispatcher`;
   integration is an `IStateScheduler` adapter (WPF ships today).
+- **Bounded refresh rate** — wrap any scheduler in `ThrottlingStateScheduler` (or
+  call `DispatcherStateScheduler.InstallThrottledAsDefault()`) and flushes reach
+  the UI at most `MaxRefreshRate` times a second, no matter how fast the feed
+  writes. The first update after an idle period still goes through immediately.
 - **Opt-in metrics** — turn on lifetime counters (`Metrics`) to see how many
   mutations coalesced away.
 - **Live diagnostics** — attach `StateDiagnostics.Attach(vm)` (the
@@ -108,9 +112,9 @@ worker writes → dirty state → coalesce → UI flush (~16 ms) → batched not
 - **Snapshots** *(planned)* — publish an immutable scalar-state snapshot as a
   single consistent unit; the cross-thread state-atomicity path. *(For
   collections, `RamblaList<T>.ReplaceSnapshot` ships today.)*
-- **Frequency policy** *(planned)* — throttling as a property of the *state*
-  (`MaxRefreshRate`), not something every ViewModel re-implements. *(The option
-  exists today but is reserved; the built-in throttling scheduler is Phase 1.)*
+- **Per-property frequency policy** *(planned)* — a refresh rate chosen per
+  property (`[State(UpdateRate = 10)]`) rather than per scheduler. *(The
+  scheduler-wide ceiling, `MaxRefreshRate`, ships today.)*
 - **Priorities** *(planned)* — a framework-neutral abstraction over dispatcher
   priority levels, so real-time data outranks background text.
 - **Async state commands** *(planned)* — commands with built-in busy/error/cancel

@@ -34,6 +34,20 @@ Your `RamblaState`-derived view models then update from any thread and bind
 exactly like any `INotifyPropertyChanged` object — Rambla coalesces the
 background writes into a few UI notifications per second.
 
+### Capping the refresh rate
+
+`InstallAsDefault` posts a flush as fast as the dispatcher drains its queue. To
+bound it, install the throttled variant instead — it wraps the adapter in the
+core's `ThrottlingStateScheduler`:
+
+```csharp
+// 60 flushes/second at most; omit the argument to use RamblaOptions.MaxRefreshRate.
+_scheduler = DispatcherStateScheduler.InstallThrottledAsDefault(60);
+```
+
+It owns a timer, so keep the returned instance and dispose it on exit (after the
+background writers stop).
+
 ## Links
 
 - **Repository & docs:** https://github.com/nicoseijas/RamblaState

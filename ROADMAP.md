@@ -40,12 +40,13 @@ The minimum that demonstrates real value. Nothing more.
    ```
 4. **`StateScheduler`** — captures the UI context automatically and marshals
    background writes into UI notifications, via `IStateScheduler`.
-5. **Coalescing** — latest-value-wins. A configurable refresh rate is the
-   plan; `RamblaOptions.MaxRefreshRate` exists but is **reserved** — no shipped
-   scheduler applies it yet (the demo's `ThrottledDispatcherScheduler` sample
-   shows the pattern).
+5. **Coalescing** — latest-value-wins, at a configurable refresh rate.
+   `ThrottlingStateScheduler` wraps any scheduler and enforces
+   `RamblaOptions.MaxRefreshRate` as a ceiling on flushes per second; the first
+   update after an idle period is released immediately, only bursts are paced.
    ```csharp
-   RamblaOptions.Default.MaxRefreshRate = 60; // reserved for the throttling scheduler
+   RamblaOptions.Default.MaxRefreshRate = 60;
+   var scheduler = DispatcherStateScheduler.InstallThrottledAsDefault(); // WPF
    ```
 
 **Flagship demo** — a real-time market dashboard:
@@ -60,13 +61,14 @@ The demo sells the library on its own.
 
 ---
 
-## Phase 1 — State engine
+## Phase 1 — State engine — **shipped (V1)**
 
-- `RamblaState` base + `[State]` generator
-- `PropertyChanged` plumbing
-- Thread marshaling via `IStateScheduler`
-- `BeginUpdate()` transactions
-- Coalescing (latest-value-wins) at a configurable refresh rate
+- `RamblaState` base + `[State]` generator ✅
+- `PropertyChanged` plumbing ✅
+- Thread marshaling via `IStateScheduler` ✅
+- `BeginUpdate()` transactions ✅
+- Coalescing (latest-value-wins) at a configurable refresh rate ✅ —
+  `ThrottlingStateScheduler` + `RamblaOptions.MaxRefreshRate`
 - BenchmarkDotNet suite measuring UI-thread CPU, dispatcher hops, notification
   count, frame latency, allocations under sustained load
 
