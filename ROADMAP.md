@@ -144,6 +144,15 @@ counting per property.
   against 11.0 (the floor) and usable from 11.x and 12.x
 - `Rambla.WinUI`
 - Possibly `Rambla.Maui`
+- `Rambla.Blazor` *(post-1.0)* — Blazor Server has the same problem shape as
+  WPF: high-frequency state vs. renders that should be few, with a per-circuit
+  `Dispatcher` to marshal onto. The adapter is a scheduler over
+  `Dispatcher.InvokeAsync` **plus** the consuming glue (a component base or
+  extension that subscribes to `PropertyChanged` and calls `StateHasChanged`),
+  since Blazor does not consume `INotifyPropertyChanged` natively. Thread-safe
+  writes to singleton state fanned out to N circuits are the second selling
+  point. Classic request/response ASP.NET stays out of scope — state nobody
+  observes has nothing to coalesce.
 
 The core never learns about `Dispatcher`; each adapter only implements
 `IStateScheduler`.
