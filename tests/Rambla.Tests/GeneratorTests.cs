@@ -22,8 +22,8 @@ public sealed class GeneratorTests
 
         run.Errors.Should().BeEmpty();
         run.Generated.Should().Contain("public decimal Bid");
-        run.Generated.Should().Contain("get => _bid;");
-        run.Generated.Should().Contain("set => SetField(ref _bid, value);");
+        run.Generated.Should().Contain("get => this._bid;");
+        run.Generated.Should().Contain("set => SetField(ref this._bid, value);");
     }
 
     [Fact]
@@ -92,6 +92,58 @@ public sealed class GeneratorTests
         run.Generated.Should().Contain("partial class Outer<T>");
         run.Generated.Should().Contain("partial class Inner");
         run.Generated.Should().Contain("public int Count");
+    }
+
+    [Fact]
+    public void Escapes_keyword_field_names()
+    {
+        GeneratorRun run = Generate("""
+            using Rambla;
+            namespace Demo;
+            public partial class Quote : RamblaState
+            {
+                [State] private int @event;
+            }
+            """);
+
+        run.Errors.Should().BeEmpty();
+        run.Generated.Should().Contain("public int Event");
+        run.Generated.Should().Contain("get => this.@event;");
+        run.Generated.Should().Contain("set => SetField(ref this.@event, value);");
+    }
+
+    [Fact]
+    public void Setter_targets_the_field_when_it_is_named_value()
+    {
+        GeneratorRun run = Generate("""
+            using Rambla;
+            namespace Demo;
+            public partial class Quote : RamblaState
+            {
+                [State] private int value;
+            }
+            """);
+
+        run.Errors.Should().BeEmpty();
+        run.Generated.Should().Contain("public int Value");
+        // Without "this." the ref would bind to the setter's implicit value
+        // parameter — code that compiles but never writes the field.
+        run.Generated.Should().Contain("set => SetField(ref this.value, value);");
+    }
+
+    [Fact]
+    public void Distinct_types_with_colliding_sanitized_hint_names_both_generate()
+    {
+        // Both type keys sanitize to the same characters once '.' becomes '_'.
+        GeneratorRun run = Generate("""
+            using Rambla;
+            namespace Demo_X { public partial class Quote : RamblaState { [State] private decimal _bid; } }
+            namespace Demo { public partial class X_Quote : RamblaState { [State] private decimal _ask; } }
+            """);
+
+        run.Errors.Should().BeEmpty();
+        run.Generated.Should().Contain("public decimal Bid");
+        run.Generated.Should().Contain("public decimal Ask");
     }
 
     // --- diagnostics ---

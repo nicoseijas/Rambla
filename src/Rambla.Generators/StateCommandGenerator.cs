@@ -117,7 +117,7 @@ public sealed class StateCommandGenerator : IIncrementalGenerator
             TypeKey: containingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
             Namespace: GeneratorSupport.NamespaceOf(containingType),
             Nesting: GeneratorSupport.NestingOf(containingType),
-            MethodName: method.Name,
+            MethodName: GeneratorSupport.EscapeIdentifier(method.Name),
             TakesToken: takesToken,
             CommandName: baseName + "Command",
             BusyName: options.BusyName ?? "Is" + Gerund(baseName),

@@ -56,6 +56,24 @@ public sealed class CommandGeneratorTests
     }
 
     [Fact]
+    public void Escapes_keyword_method_names()
+    {
+        GeneratorRun run = Generate("""
+            using System.Threading.Tasks;
+            using Rambla;
+            namespace Demo;
+            public partial class Quotes : RamblaState
+            {
+                [StateCommand(Name = "Fire")]
+                private Task @event() => Task.CompletedTask;
+            }
+            """);
+
+        run.Errors.Should().BeEmpty();
+        run.Generated.Should().Contain("_ => @event(),");
+    }
+
+    [Fact]
     public void Passes_CancelPrevious_through_to_the_command()
     {
         GeneratorRun run = Generate("""

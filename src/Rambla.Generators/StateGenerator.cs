@@ -105,7 +105,7 @@ public sealed class StateGenerator : IIncrementalGenerator
             Nesting: GeneratorSupport.NestingOf(containingType),
             PropertyType: field.Type.ToDisplayString(TypeFormat),
             PropertyName: propertyName,
-            FieldName: field.Name,
+            FieldName: GeneratorSupport.EscapeIdentifier(field.Name),
             Location: location);
 
         return FieldResult.Ok(model);
@@ -166,8 +166,10 @@ public sealed class StateGenerator : IIncrementalGenerator
                     FieldModel f = fields[i];
                     Pad(sb, indent).Append("public ").Append(f.PropertyType).Append(' ').Append(f.PropertyName).AppendLine();
                     Pad(sb, indent).AppendLine("{");
-                    Pad(sb, indent + 1).Append("get => ").Append(f.FieldName).AppendLine(";");
-                    Pad(sb, indent + 1).Append("set => SetField(ref ").Append(f.FieldName).AppendLine(", value);");
+                    // "this." keeps the ref on the field even when it is named
+                    // "value" — bare, that would bind to the setter's parameter.
+                    Pad(sb, indent + 1).Append("get => this.").Append(f.FieldName).AppendLine(";");
+                    Pad(sb, indent + 1).Append("set => SetField(ref this.").Append(f.FieldName).AppendLine(", value);");
                     Pad(sb, indent).AppendLine("}");
                     if (i < fields.Count - 1)
                     {

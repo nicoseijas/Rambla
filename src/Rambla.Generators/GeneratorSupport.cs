@@ -96,16 +96,46 @@ internal static class GeneratorSupport
 
     public static StringBuilder Pad(StringBuilder sb, int indent) => sb.Append(' ', indent * 4);
 
-    /// <summary>A file name derived from the type, unique per generator suffix.</summary>
+    /// <summary>
+    /// Prefixes a symbol name with <c>@</c> when C# reserves it (<c>event</c>,
+    /// <c>value</c>, ...), so emitted references to it still parse. Symbol names
+    /// never carry the <c>@</c> of a verbatim declaration.
+    /// </summary>
+    public static string EscapeIdentifier(string name)
+        => SyntaxFacts.GetKeywordKind(name) != SyntaxKind.None
+            || SyntaxFacts.GetContextualKeywordKind(name) != SyntaxKind.None
+            ? "@" + name
+            : name;
+
+    /// <summary>
+    /// A file name derived from the type, unique per generator suffix. Sanitizing
+    /// collapses every non-alphanumeric character to <c>_</c>, which can make two
+    /// distinct types collide (<c>Demo_X.Quote</c> / <c>Demo.X_Quote</c>) — the
+    /// hash of the unsanitized key keeps the names apart.
+    /// </summary>
     public static string HintName(string typeKey, string suffix)
     {
-        var sb = new StringBuilder(typeKey.Length);
+        var sb = new StringBuilder(typeKey.Length + 9);
         foreach (char c in typeKey)
         {
             sb.Append(char.IsLetterOrDigit(c) ? c : '_');
         }
 
-        return sb.Append(suffix).ToString();
+        return sb.Append('_')
+            .Append(Fnv1a(typeKey).ToString("x8", System.Globalization.CultureInfo.InvariantCulture))
+            .Append(suffix)
+            .ToString();
+    }
+
+    private static uint Fnv1a(string text)
+    {
+        uint hash = 2166136261;
+        foreach (char c in text)
+        {
+            hash = (hash ^ c) * 16777619;
+        }
+
+        return hash;
     }
 
     /// <summary>
