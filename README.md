@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/banner.svg" alt="Rambla — high-frequency observable state for real-time .NET" width="100%">
+</p>
+
 # Rambla
 
 [![CI](https://github.com/nicoseijas/RamblaState/actions/workflows/ci.yml/badge.svg)](https://github.com/nicoseijas/RamblaState/actions/workflows/ci.yml)
@@ -252,3 +256,10 @@ adopted anywhere with minimal friction.
 
 English is the primary language of this project (code, docs, issues, and
 discussions) to keep the international community inclusive.
+
+---
+
+<p align="center">
+  <img src="./assets/uruguay.svg" alt="Flag of Uruguay" width="22"><br>
+  <sub>Built in Montevideo, Uruguay</sub>
+</p>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 30" width="45" height="30" role="img" aria-label="Flag of Uruguay">
+  <rect x="0" y="0.0000" width="45" height="3.3333" fill="#FFFFFF"/>
+  <rect x="0" y="3.3333" width="45" height="3.3333" fill="#0038A8"/>
+  <rect x="0" y="6.6667" width="45" height="3.3333" fill="#FFFFFF"/>
+  <rect x="0" y="10.0000" width="45" height="3.3333" fill="#0038A8"/>
+  <rect x="0" y="13.3333" width="45" height="3.3333" fill="#FFFFFF"/>
+  <rect x="0" y="16.6667" width="45" height="3.3333" fill="#0038A8"/>
+  <rect x="0" y="20.0000" width="45" height="3.3333" fill="#FFFFFF"/>
+  <rect x="0" y="23.3333" width="45" height="3.3333" fill="#0038A8"/>
+  <rect x="0" y="26.6667" width="45" height="3.3333" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="15" height="16.6667" fill="#FFFFFF"/>
+  <polygon points="7.500,2.733 7.126,6.013 7.874,6.013" fill="#FCD116"/>
+  <polygon points="9.260,4.083 8.042,6.047 8.734,6.333" fill="#FCD116"/>
+  <polygon points="11.460,4.374 8.876,6.428 9.405,6.958" fill="#FCD116"/>
+  <polygon points="11.750,6.573 9.500,7.100 9.787,7.791" fill="#FCD116"/>
+  <polygon points="13.100,8.333 9.820,7.959 9.820,8.708" fill="#FCD116"/>
+  <polygon points="11.750,10.094 9.787,8.875 9.500,9.567" fill="#FCD116"/>
+  <polygon points="11.460,12.293 9.405,9.709 8.876,10.239" fill="#FCD116"/>
+  <polygon points="9.260,12.583 8.734,10.333 8.042,10.620" fill="#FCD116"/>
+  <polygon points="7.500,13.933 7.874,10.653 7.126,10.653" fill="#FCD116"/>
+  <polygon points="5.740,12.583 6.958,10.620 6.266,10.333" fill="#FCD116"/>
+  <polygon points="3.540,12.293 6.124,10.239 5.595,9.709" fill="#FCD116"/>
+  <polygon points="3.250,10.094 5.500,9.567 5.213,8.875" fill="#FCD116"/>
+  <polygon points="1.900,8.333 5.180,8.708 5.180,7.959" fill="#FCD116"/>
+  <polygon points="3.250,6.573 5.213,7.791 5.500,7.100" fill="#FCD116"/>
+  <polygon points="3.540,4.374 5.595,6.958 6.124,6.428" fill="#FCD116"/>
+  <polygon points="5.740,4.083 6.266,6.333 6.958,6.047" fill="#FCD116"/>
+  <circle cx="7.5" cy="8.333" r="2.35" fill="#FCD116" stroke="#C8951A" stroke-width="0.18"/>
+  <rect x="0.15" y="0.15" width="44.70" height="29.70" fill="none" stroke="#0038A8" stroke-opacity="0.35" stroke-width="0.3"/>
+</svg>

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" width="1280" height="320" role="img" aria-label="Rambla — high-frequency observable state for real-time .NET">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1020"/>
+      <stop offset="0.55" stop-color="#0C1526"/>
+      <stop offset="1" stop-color="#0A1830"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#0038A8" stop-opacity="0"/>
+      <stop offset="0.35" stop-color="#2E6BD6" stop-opacity="0.55"/>
+      <stop offset="0.75" stop-color="#69A8FF" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#F5C542" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="scrim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0A1020" stop-opacity="0.97"/>
+      <stop offset="0.42" stop-color="#0A1020" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#0A1020" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F5C542"/>
+      <stop offset="1" stop-color="#F5C542" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="320" fill="url(#bg)"/>
+
+  <g>
+    <path d="M -10 22 C 380 22, 820 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="1.60" stroke-linecap="round"/>
+    <path d="M -10 44 C 440 44, 860 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="2.30" stroke-linecap="round"/>
+    <path d="M -10 66 C 500 66, 900 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="3.00" stroke-linecap="round"/>
+    <path d="M -10 90 C 380 90, 940 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="1.95" stroke-linecap="round"/>
+    <path d="M -10 116 C 440 116, 820 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="2.65" stroke-linecap="round"/>
+    <path d="M -10 142 C 500 142, 860 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="1.60" stroke-linecap="round"/>
+    <path d="M -10 168 C 380 168, 900 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="2.30" stroke-linecap="round"/>
+    <path d="M -10 196 C 440 196, 940 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="3.00" stroke-linecap="round"/>
+    <path d="M -10 224 C 500 224, 820 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="1.95" stroke-linecap="round"/>
+    <path d="M -10 252 C 380 252, 860 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="2.65" stroke-linecap="round"/>
+    <path d="M -10 278 C 440 278, 900 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="1.60" stroke-linecap="round"/>
+    <path d="M -10 300 C 500 300, 940 168, 1150 168" fill="none" stroke="url(#flow)" stroke-width="2.30" stroke-linecap="round"/>
+    <circle cx="300" cy="29.6" r="2.6" fill="#7FB2FF" opacity="0.38"/>
+    <circle cx="428" cy="77.3" r="2.6" fill="#7FB2FF" opacity="0.43"/>
+    <circle cx="556" cy="126.1" r="2.6" fill="#7FB2FF" opacity="0.49"/>
+    <circle cx="684" cy="168.0" r="2.6" fill="#7FB2FF" opacity="0.54"/>
+    <circle cx="812" cy="199.2" r="2.6" fill="#7FB2FF" opacity="0.60"/>
+    <circle cx="940" cy="211.0" r="2.6" fill="#7FB2FF" opacity="0.65"/>
+  </g>
+
+  <!-- the single coalesced flush -->
+  <path d="M 1120 168 L 1232 168" stroke="#F5C542" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="1232" cy="168" r="5.5" fill="#F5C542"/>
+  <circle cx="1232" cy="168" r="13" fill="none" stroke="#F5C542" stroke-opacity="0.28" stroke-width="1.5"/>
+
+  <rect width="820" height="320" fill="url(#scrim)"/>
+
+  <g font-family="Segoe UI, Inter, Helvetica Neue, Arial, sans-serif">
+    <text x="72" y="132" font-size="96" font-weight="700" fill="#F2F6FF" letter-spacing="-3">Rambla</text>
+    <rect x="76" y="150" width="320" height="3" fill="url(#rule)"/>
+    <text x="74" y="196" font-size="25" font-weight="600" fill="#9FB6D6">High-frequency observable state for real-time .NET</text>
+    <text x="74" y="238" font-size="19" fill="#6E86A8">Thread-safe writes · batching · coalescing · diagnostics</text>
+    <text x="74" y="278" font-size="16" font-weight="600" fill="#F5C542" letter-spacing="1.2">100,000 MUTATIONS  →  ~101 NOTIFICATIONS</text>
+  </g>
+</svg>
