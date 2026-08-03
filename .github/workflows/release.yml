@@ -7,7 +7,7 @@ name: Release to NuGet
 # Auth: NuGet Trusted Publishing (OIDC) — no long-lived API key.
 # One-time setup on nuget.org (your username > Trusted Publishing > add policy):
 #   Repository Owner : nicoseijas
-#   Repository       : RamblaState
+#   Repository       : Rambla
 #   Workflow File    : release.yml          (file name only, no path)
 #   Environment      : (leave empty)
 # And add a repo secret NUGET_USER = your nuget.org profile name (not your email).

@@ -25,8 +25,8 @@
     <Company>Nicolás Seijas</Company>
     <Copyright>Copyright (c) 2026 Nicolás Seijas</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/nicoseijas/RamblaState</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/nicoseijas/RamblaState.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/nicoseijas/Rambla</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nicoseijas/Rambla.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>mvvm;wpf;observable;state;real-time;high-frequency;dispatcher;trading;telemetry</PackageTags>
 

@@ -63,11 +63,11 @@ if every intermediate value matters, use a queue/stream instead.
 
 ## Links
 
-- **Repository & docs:** https://github.com/nicoseijas/RamblaState
-- **Getting started:** https://github.com/nicoseijas/RamblaState/wiki/Getting-Started
-- **Benchmarks:** https://github.com/nicoseijas/RamblaState/blob/main/BENCHMARKS.md
-- **Frozen V1 semantics:** https://github.com/nicoseijas/RamblaState/blob/main/SEMANTICS.md
-- **Roadmap:** https://github.com/nicoseijas/RamblaState/blob/main/ROADMAP.md
+- **Repository & docs:** https://github.com/nicoseijas/Rambla
+- **Getting started:** https://github.com/nicoseijas/Rambla/wiki/Getting-Started
+- **Benchmarks:** https://github.com/nicoseijas/Rambla/blob/main/BENCHMARKS.md
+- **Frozen V1 semantics:** https://github.com/nicoseijas/Rambla/blob/main/SEMANTICS.md
+- **Roadmap:** https://github.com/nicoseijas/Rambla/blob/main/ROADMAP.md
 
-Released under the [MIT License](https://github.com/nicoseijas/RamblaState/blob/main/LICENSE).
+Released under the [MIT License](https://github.com/nicoseijas/Rambla/blob/main/LICENSE).
 Pre-1.0: the API may still change before 1.0.

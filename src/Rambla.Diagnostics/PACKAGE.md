@@ -55,7 +55,7 @@ using var session = StateDiagnostics.Attach(vm, scheduler);
 
 ## Links
 
-- **Repository & docs:** https://github.com/nicoseijas/RamblaState
-- **Wiki:** https://github.com/nicoseijas/RamblaState/wiki
+- **Repository & docs:** https://github.com/nicoseijas/Rambla
+- **Wiki:** https://github.com/nicoseijas/Rambla/wiki
 
-Released under the [MIT License](https://github.com/nicoseijas/RamblaState/blob/main/LICENSE).
+Released under the [MIT License](https://github.com/nicoseijas/Rambla/blob/main/LICENSE).

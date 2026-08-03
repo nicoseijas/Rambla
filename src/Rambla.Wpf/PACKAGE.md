@@ -50,8 +50,8 @@ background writers stop).
 
 ## Links
 
-- **Repository & docs:** https://github.com/nicoseijas/RamblaState
-- **Getting started (WPF):** https://github.com/nicoseijas/RamblaState/wiki/Getting-Started
-- **Market dashboard sample:** https://github.com/nicoseijas/RamblaState/tree/main/samples/Rambla.Demo.MarketDashboard
+- **Repository & docs:** https://github.com/nicoseijas/Rambla
+- **Getting started (WPF):** https://github.com/nicoseijas/Rambla/wiki/Getting-Started
+- **Market dashboard sample:** https://github.com/nicoseijas/Rambla/tree/main/samples/Rambla.Demo.MarketDashboard
 
-Released under the [MIT License](https://github.com/nicoseijas/RamblaState/blob/main/LICENSE).
+Released under the [MIT License](https://github.com/nicoseijas/Rambla/blob/main/LICENSE).

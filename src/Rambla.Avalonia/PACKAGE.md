@@ -53,8 +53,8 @@ substitute a fake and assert what reached the UI without a live UI thread.
 
 ## Links
 
-- **Repository & docs:** https://github.com/nicoseijas/RamblaState
-- **Getting started:** https://github.com/nicoseijas/RamblaState/wiki/Getting-Started
-- **Frozen V1 semantics:** https://github.com/nicoseijas/RamblaState/blob/main/SEMANTICS.md
+- **Repository & docs:** https://github.com/nicoseijas/Rambla
+- **Getting started:** https://github.com/nicoseijas/Rambla/wiki/Getting-Started
+- **Frozen V1 semantics:** https://github.com/nicoseijas/Rambla/blob/main/SEMANTICS.md
 
-Released under the [MIT License](https://github.com/nicoseijas/RamblaState/blob/main/LICENSE).
+Released under the [MIT License](https://github.com/nicoseijas/Rambla/blob/main/LICENSE).
