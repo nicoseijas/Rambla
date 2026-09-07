@@ -28,7 +28,7 @@
     <PackageProjectUrl>https://github.com/nicoseijas/Rambla</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nicoseijas/Rambla.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>mvvm;wpf;observable;state;real-time;high-frequency;dispatcher;trading;telemetry</PackageTags>
+    <PackageTags>mvvm;wpf;winui;observable;state;real-time;high-frequency;dispatcher;trading;telemetry</PackageTags>
 
     <!-- Single source of truth for the version of every package. Override on the
          command line for CI: dotnet pack -p:Version=0.4.0 -->

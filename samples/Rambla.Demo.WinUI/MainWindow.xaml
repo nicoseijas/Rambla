@@ -1,0 +1,87 @@
+<Window
+    x:Class="Rambla.Demo.WinUI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Rambla.Demo.WinUI"
+    Title="Rambla — WinUI Real-Time Market Dashboard">
+
+    <Grid x:Name="Root" Padding="20" RowSpacing="16" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Rambla" Style="{ThemeResource TitleTextBlockStyle}" />
+            <TextBlock Text="WinUI 3 · background writes coalesced onto DispatcherQueue" Opacity="0.7" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12">
+            <NumberBox Header="Symbols" Value="{Binding SymbolCount, Mode=TwoWay}" Minimum="1" Maximum="5000" SpinButtonPlacementMode="Inline" Width="140" />
+            <NumberBox Header="Target quotes/s" Value="{Binding TargetRate, Mode=TwoWay}" Minimum="1" Maximum="5000000" SpinButtonPlacementMode="Inline" Width="170" />
+            <NumberBox Header="Refresh Hz" Value="{Binding RefreshHz, Mode=TwoWay}" Minimum="1" Maximum="240" SpinButtonPlacementMode="Inline" Width="140" />
+            <Button Content="Start" Command="{Binding StartCommand}" VerticalAlignment="Bottom" />
+            <Button Content="Stop" Command="{Binding StopCommand}" VerticalAlignment="Bottom" />
+        </StackPanel>
+
+        <Grid Grid.Row="2" ColumnSpacing="12" Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <local:MetricCard Label="INCOMING MUTATIONS/S" Value="{Binding IncomingPerSecText}" />
+            <local:MetricCard Grid.Column="1" Label="PROPERTYCHANGED/S" Value="{Binding NotificationsPerSecText}" />
+            <local:MetricCard Grid.Column="2" Label="SCHEDULER POSTS/S" Value="{Binding PostsPerSecText}" />
+            <local:MetricCard Grid.Column="3" Label="COALESCING" Value="{Binding CoalescingPercentText}" />
+        </Grid>
+
+        <ListView Grid.Row="3" ItemsSource="{Binding Rows}" SelectionMode="None">
+            <ListView.Header>
+                <Grid Padding="8,4" ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Symbol" FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="1" Text="Bid" FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="2" Text="Ask" FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="3" Text="Last" FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="4" Text="Volume" FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="5" Text="PnL" FontWeight="SemiBold" />
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="8,4" ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Symbol}" />
+                        <TextBlock Grid.Column="1" Text="{Binding Bid}" />
+                        <TextBlock Grid.Column="2" Text="{Binding Ask}" />
+                        <TextBlock Grid.Column="3" Text="{Binding Last}" />
+                        <TextBlock Grid.Column="4" Text="{Binding Volume}" />
+                        <TextBlock Grid.Column="5" Text="{Binding Pnl}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <TextBlock Grid.Row="4" Text="{Binding StatusText}" Opacity="0.7" />
+    </Grid>
+</Window>
