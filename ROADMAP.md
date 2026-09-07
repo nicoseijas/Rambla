@@ -144,6 +144,10 @@ counting per property.
   against 11.0 (the floor) and usable from 11.x and 12.x
 - `Rambla.WinUI` ✅ — `DispatcherStateScheduler` over the Windows App SDK
   `DispatcherQueue`, at low priority by default
+- `VirtualizingList<T>` for WinUI ✅ *(experimental)* — a read-only `IList` /
+  `IItemsRangeInfo` source with a full logical count, cancellation-aware async
+  range loading, and a bounded cache; the WinUI proof of concept demonstrates
+  500,000 logical rows with 420 cached items
 - Possibly `Rambla.Maui`
 - `Rambla.Blazor` *(post-1.0)* — Blazor Server has the same problem shape as
   WPF: high-frequency state vs. renders that should be few, with a per-circuit

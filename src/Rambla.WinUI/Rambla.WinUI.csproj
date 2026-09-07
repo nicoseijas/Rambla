@@ -5,7 +5,7 @@
     <RootNamespace>Rambla.WinUI</RootNamespace>
     <IsPackable>true</IsPackable>
     <PackageId>Rambla.WinUI</PackageId>
-    <Description>WinUI 3 dispatcher scheduler adapter for Rambla. Marshals coalesced state flushes onto the UI thread via the Windows App SDK DispatcherQueue.</Description>
+    <Description>WinUI 3 integration for Rambla: DispatcherQueue scheduling and experimental bounded, asynchronous ListView data virtualization.</Description>
     <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
   </PropertyGroup>
 
