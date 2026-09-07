@@ -5,6 +5,11 @@
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <UseWinUI>true</UseWinUI>
+    <!-- Keep the demo runnable from its build output: unlike a packaged WinUI
+         app, it cannot assume that the Windows App Runtime is installed. -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <RootNamespace>Rambla.Demo.WinUI</RootNamespace>
     <IsPackable>false</IsPackable>
     <!-- Sample/demo app: relax the library-grade analyzer gate to keep it approachable. -->
