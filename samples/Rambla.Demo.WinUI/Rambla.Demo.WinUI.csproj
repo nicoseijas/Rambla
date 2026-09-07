@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <UseWinUI>true</UseWinUI>
+    <RootNamespace>Rambla.Demo.WinUI</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <!-- Sample/demo app: relax the library-grade analyzer gate to keep it approachable. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-minimum</AnalysisLevel>
+    <NoWarn>$(NoWarn);CA1822</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Rambla\Rambla.csproj" />
+    <ProjectReference Include="..\..\src\Rambla.WinUI\Rambla.WinUI.csproj" />
+    <!-- Apply [State] and [StateCommand] in the sample; analyzers do not flow
+         through ProjectReference (NuGet consumers receive it from Rambla.nupkg). -->
+    <ProjectReference Include="..\..\src\Rambla.Generators\Rambla.Generators.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <!-- The workload is framework-neutral, so reuse the feed, rows and metrics
+       from the WPF demo. This sample supplies the WinUI window and scheduler. -->
+  <ItemGroup>
+    <Compile Include="..\Rambla.Demo.MarketDashboard\Model\ISymbolRow.cs" Link="Workload\ISymbolRow.cs" />
+    <Compile Include="..\Rambla.Demo.MarketDashboard\Model\RamblaSymbolRow.cs" Link="Workload\RamblaSymbolRow.cs" />
+    <Compile Include="..\Rambla.Demo.MarketDashboard\Feed\SyntheticFeed.cs" Link="Workload\SyntheticFeed.cs" />
+    <Compile Include="..\Rambla.Demo.MarketDashboard\Diagnostics\DemoMetrics.cs" Link="Workload\DemoMetrics.cs" />
+    <Compile Include="..\Rambla.Demo.MarketDashboard\Diagnostics\LatencyProbe.cs" Link="Workload\LatencyProbe.cs" />
+    <Compile Include="..\Rambla.Demo.MarketDashboard\Diagnostics\PercentileReservoir.cs" Link="Workload\PercentileReservoir.cs" />
+    <Compile Include="..\Rambla.Demo.MarketDashboard\Scheduling\MeteringScheduler.cs" Link="Workload\MeteringScheduler.cs" />
+  </ItemGroup>
+
+</Project>

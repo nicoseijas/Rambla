@@ -210,16 +210,17 @@ there is nothing to coalesce, and Rambla loses. It is a tool for state that
 repeats faster than it renders, not for one-shot fan-outs. See
 [BENCHMARKS.md](./BENCHMARKS.md) and [docs/philosophy.md](./docs/philosophy.md).
 
-Run the [market dashboard demo](./samples/Rambla.Demo.MarketDashboard) to watch
-it live.
+Run the [WPF market dashboard demo](./samples/Rambla.Demo.MarketDashboard) or
+the [WinUI 3 market dashboard demo](./samples/Rambla.Demo.WinUI) to watch it
+live.
 
 ## Status
 
 Early. The core state engine (writes, batching, coalescing, schedulers, opt-in
 metrics) is implemented, its V1 semantics are frozen
 ([SEMANTICS.md](./SEMANTICS.md)), and it is covered by unit and concurrency
-stress tests. The WPF, Avalonia, and WinUI 3 adapters and the market dashboard
-demo run.
+stress tests. The WPF, Avalonia, and WinUI 3 adapters run. The repository has
+real-time market dashboard demos for both WPF and WinUI 3.
 The `[State]` and `[StateCommand]` source generators ship and are dogfooded by
 the demo. `RamblaList<T>`, `RamblaDictionary<K,V>`, `Rambla.Diagnostics`, the
 throttling scheduler and async state commands are shipped.

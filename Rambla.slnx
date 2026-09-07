@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/Rambla.Demo.MarketDashboard/Rambla.Demo.MarketDashboard.csproj" />
+    <Project Path="samples/Rambla.Demo.WinUI/Rambla.Demo.WinUI.csproj" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Rambla.Avalonia/Rambla.Avalonia.csproj" />
