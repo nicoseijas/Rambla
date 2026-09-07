@@ -122,6 +122,10 @@ itself while the run is in flight.
   accept writes from any thread and coalesce a burst into the minimum
   `CollectionChanged` events per flush (`Batch`, `ReplaceSnapshot` with a minimal
   diff; latest-value-wins per key), instead of one per item.
+- **WinUI data virtualization (experimental)** — `VirtualizingList<T>` keeps a
+  full logical scroll extent while loading only the `ListView` viewport and a
+  bounded nearby cache. The included proof of concept binds 500,000 rows while
+  retaining 420 models; see the [WinUI virtualization demo](./samples/Rambla.Demo.WinUI.Virtualization/README.md).
 
 ## Designed, not yet shipped
 
