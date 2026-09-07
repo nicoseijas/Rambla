@@ -142,7 +142,8 @@ counting per property.
 - `Rambla.Wpf` ✅ — `DispatcherStateScheduler` (ships alongside the MVP demo)
 - `Rambla.Avalonia` ✅ — the same adapter over Avalonia's `IDispatcher`, built
   against 11.0 (the floor) and usable from 11.x and 12.x
-- `Rambla.WinUI`
+- `Rambla.WinUI` ✅ — `DispatcherStateScheduler` over the Windows App SDK
+  `DispatcherQueue`, at low priority by default
 - Possibly `Rambla.Maui`
 - `Rambla.Blazor` *(post-1.0)* — Blazor Server has the same problem shape as
   WPF: high-frequency state vs. renders that should be few, with a per-circuit

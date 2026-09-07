@@ -18,6 +18,10 @@
          IDispatcher API the adapter uses is unchanged across both. -->
     <PackageVersion Include="Avalonia" Version="11.0.0" />
 
+    <!-- WinUI 3 / Windows App SDK. Reference the stable 1.8 floor; a consumer on
+         a newer Windows App SDK unifies upward through NuGet. -->
+    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.260804001" />
+
     <!-- Testing -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="xunit" Version="2.9.2" />

@@ -110,7 +110,8 @@ itself while the run is in flight.
   `AsyncStateCommand` plus the state that describes its run: busy flag, last
   error, and a cancel command. Opt into latest-wins with `CancelPrevious = true`.
 - **Framework-neutral scheduling** — the core never references `Dispatcher`;
-  integration is an `IStateScheduler` adapter (WPF and Avalonia ship today).
+  integration is an `IStateScheduler` adapter (WPF, Avalonia, and WinUI 3 ship
+  today).
 - **Bounded refresh rate** — wrap any scheduler in `ThrottlingStateScheduler` (or
   call `DispatcherStateScheduler.InstallThrottledAsDefault()`) and flushes reach
   the UI at most `MaxRefreshRate` times a second, no matter how fast the feed
@@ -183,7 +184,7 @@ If your state changes at UI speed, you do not need it.
 | `Rambla.Diagnostics`| Live diagnostics (`StateDiagnostics.Attach`)   |
 | `Rambla.Wpf`        | WPF dispatcher scheduler adapter               |
 | `Rambla.Avalonia`   | Avalonia dispatcher scheduler adapter          |
-| `Rambla.WinUI`      | WinUI 3 adapter *(planned)*                    |
+| `Rambla.WinUI`      | WinUI 3 `DispatcherQueue` scheduler adapter    |
 
 The core never references `Dispatcher`. Framework integration is an adapter
 behind `IStateScheduler`.
@@ -217,7 +218,8 @@ it live.
 Early. The core state engine (writes, batching, coalescing, schedulers, opt-in
 metrics) is implemented, its V1 semantics are frozen
 ([SEMANTICS.md](./SEMANTICS.md)), and it is covered by unit and concurrency
-stress tests. The WPF and Avalonia adapters and the market dashboard demo run.
+stress tests. The WPF, Avalonia, and WinUI 3 adapters and the market dashboard
+demo run.
 The `[State]` and `[StateCommand]` source generators ship and are dogfooded by
 the demo. `RamblaList<T>`, `RamblaDictionary<K,V>`, `Rambla.Diagnostics`, the
 throttling scheduler and async state commands are shipped.
