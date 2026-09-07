@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <!-- This project deliberately consumes Rambla as a NuGet package, not a
+         ProjectReference. Disable the repository's central package management so
+         CI can inject the just-packed, CI-only version. -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <RamblaPackageVersion Condition="'$(RamblaPackageVersion)' == ''">0.5.2</RamblaPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Rambla" Version="$(RamblaPackageVersion)" />
+  </ItemGroup>
+
+</Project>

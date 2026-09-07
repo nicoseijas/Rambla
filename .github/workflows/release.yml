@@ -66,12 +66,27 @@ jobs:
             echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
           fi
 
+      # Validate the actual package payload from a clean consumer before signing
+      # in to NuGet. Repository builds use ProjectReference; this proves that the
+      # embedded [State]/[StateCommand] analyzer works as delivered to users.
       - name: Pack
         run: >
           dotnet pack Rambla.slnx --configuration Release
           -p:Version=${{ steps.ver.outputs.value }}
           -p:ContinuousIntegrationBuild=true
           -o ${{ github.workspace }}/artifacts
+
+      - name: Verify packed core from a clean consumer
+        run: >
+          dotnet restore tests/Rambla.PackageSmoke/Rambla.PackageSmoke.csproj
+          -p:RamblaPackageVersion=${{ steps.ver.outputs.value }}
+          --source ${{ github.workspace }}/artifacts
+
+      - name: Build packed-package consumer
+        run: >
+          dotnet build tests/Rambla.PackageSmoke/Rambla.PackageSmoke.csproj
+          --configuration Release --no-restore
+          -p:RamblaPackageVersion=${{ steps.ver.outputs.value }}
 
       # Exchange the OIDC token for a short-lived (1 h) NuGet API key.
       # Requested right before the push so it cannot expire in between.
