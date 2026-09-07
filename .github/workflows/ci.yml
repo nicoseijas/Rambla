@@ -38,3 +38,25 @@ jobs:
 
       - name: Test
         run: dotnet test Rambla.slnx --configuration Release --no-build --verbosity normal
+
+      # The repository builds through ProjectReference, but package consumers get
+      # the [State]/[StateCommand] generator from Rambla.nupkg. Compile a clean
+      # consumer against the exact package produced in this run to verify that
+      # analyzer payload and its generated API before a release ever reaches NuGet.
+      - name: Pack packages for consumer smoke test
+        run: >
+          dotnet pack Rambla.slnx --configuration Release --no-build
+          -p:Version=0.0.0-ci
+          -o ${{ runner.temp }}/rambla-packages
+
+      - name: Verify packed core from a clean consumer
+        run: >
+          dotnet restore tests/Rambla.PackageSmoke/Rambla.PackageSmoke.csproj
+          -p:RamblaPackageVersion=0.0.0-ci
+          --source ${{ runner.temp }}/rambla-packages
+
+      - name: Build packed-package consumer
+        run: >
+          dotnet build tests/Rambla.PackageSmoke/Rambla.PackageSmoke.csproj
+          --configuration Release --no-restore
+          -p:RamblaPackageVersion=0.0.0-ci
