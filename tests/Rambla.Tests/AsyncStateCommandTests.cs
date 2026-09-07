@@ -235,6 +235,40 @@ public sealed class AsyncStateCommandTests
     }
 
     [Fact]
+    public async Task Throwing_lifecycle_observers_do_not_wedge_the_command()
+    {
+        TaskCompletionSource<object?> gate = new();
+        AsyncStateCommand command = new(_ => gate.Task, scheduler: ImmediateStateScheduler.Instance);
+        int healthyStateObserverCalls = 0;
+        int healthyCanExecuteObserverCalls = 0;
+        int healthyCancelCanExecuteObserverCalls = 0;
+
+        command.StateChanged += (_, _) => throw new InvalidOperationException("observer bug");
+        command.StateChanged += (_, _) => healthyStateObserverCalls++;
+        command.CanExecuteChanged += (_, _) => throw new InvalidOperationException("observer bug");
+        command.CanExecuteChanged += (_, _) => healthyCanExecuteObserverCalls++;
+        command.CancelCommand.CanExecuteChanged += (_, _) => throw new InvalidOperationException("observer bug");
+        command.CancelCommand.CanExecuteChanged += (_, _) => healthyCancelCanExecuteObserverCalls++;
+
+        Task run = command.ExecuteAsync();
+
+        command.IsRunning.Should().BeTrue("a StateChanged observer must not abort the start transition");
+        command.CanExecute(null).Should().BeFalse();
+        healthyStateObserverCalls.Should().Be(1, "one broken observer must not silence later observers");
+        healthyCanExecuteObserverCalls.Should().Be(1, "one broken observer must not silence later observers");
+        healthyCancelCanExecuteObserverCalls.Should().Be(1, "one broken observer must not silence later observers");
+
+        gate.SetResult(null);
+        await run;
+
+        command.IsRunning.Should().BeFalse("a lifecycle observer must not prevent the finish transition");
+        command.CanExecute(null).Should().BeTrue();
+        healthyStateObserverCalls.Should().Be(2);
+        healthyCanExecuteObserverCalls.Should().Be(2);
+        healthyCancelCanExecuteObserverCalls.Should().Be(2);
+    }
+
+    [Fact]
     public async Task A_superseded_failure_does_not_overwrite_the_live_run()
     {
         TaskCompletionSource<object?> first = new();

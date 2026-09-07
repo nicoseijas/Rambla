@@ -125,7 +125,12 @@ generated busy/error members are ordinary properties marked dirty through
    several transitions inside one scheduler window raise `CanExecuteChanged` once.
    `StateChanged`, in contrast, fires synchronously on the thread the transition
    happened on — that is what lets the owning state mark its projections dirty
-   immediately.
+   immediately. Lifecycle observers (`StateChanged`, `CanExecuteChanged`, and the
+   cancel command's `CanExecuteChanged`) are isolated: an observer exception is
+   swallowed, later observers still run, and command execution or completion
+   cannot be prevented. This differs deliberately from `RamblaState`'s
+   fail-fast `PropertyChanged` contract: a lifecycle observer has no recovery
+   path if it aborts the transition before the command body starts.
 6. **Commands are built on first access** (`RamblaState.EnsureCommand`), because a
    field initializer runs before the base constructor and could not see
    `Scheduler`.
@@ -134,10 +139,10 @@ generated busy/error members are ordinary properties marked dirty through
    keeps running when the view goes away — cancel it if that matters.
 
 *Tested:* `AsyncStateCommandTests` — the run policy under both concurrency modes,
-superseded runs, captured failures, cancellation, the cancel command's gate,
-scheduler marshaling and coalescing, and the busy/error projections notifying
-through a state flush. The generated shape is covered by `CommandGeneratorTests`,
-which compiles the emitted code against the real assembly.
+superseded runs, captured failures, cancellation, lifecycle-observer isolation,
+the cancel command's gate, scheduler marshaling and coalescing, and the busy/error
+projections notifying through a state flush. The generated shape is covered by
+`CommandGeneratorTests`, which compiles the emitted code against the real assembly.
 
 ## Throttling — `ThrottlingStateScheduler`
 

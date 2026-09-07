@@ -241,7 +241,7 @@ public sealed class AsyncStateCommand : ICommand
 
     private void OnStateChanged()
     {
-        StateChanged?.Invoke(this, EventArgs.Empty);
+        InvokeEventHandlers(StateChanged);
         ScheduleNotification();
     }
 
@@ -272,8 +272,36 @@ public sealed class AsyncStateCommand : ICommand
     private void RaiseCanExecuteChanged()
     {
         Volatile.Write(ref _notifyScheduled, 0);
-        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        InvokeEventHandlers(CanExecuteChanged);
         _cancelCommand.RaiseCanExecuteChanged();
+    }
+
+    /// <summary>
+    /// Invokes a command lifecycle event without allowing one observer to change
+    /// command execution. Unlike <see cref="RamblaState.PropertyChanged"/>, these
+    /// are lifecycle observers: a throw during the start transition used to abort
+    /// the method before <see cref="RunAsync"/> was even called, leaving
+    /// <see cref="IsRunning"/> permanently true.
+    /// </summary>
+    private void InvokeEventHandlers(EventHandler? handlers)
+    {
+        if (handlers is null)
+        {
+            return;
+        }
+
+        foreach (EventHandler handler in handlers.GetInvocationList())
+        {
+            try
+            {
+                handler(this, EventArgs.Empty);
+            }
+            catch
+            {
+                // Observers must not prevent the command from reaching its next
+                // state or stop later observers (including generated projections).
+            }
+        }
     }
 
     /// <summary>
@@ -293,6 +321,6 @@ public sealed class AsyncStateCommand : ICommand
 
         public void Execute(object? parameter) => _owner.Cancel();
 
-        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        public void RaiseCanExecuteChanged() => _owner.InvokeEventHandlers(CanExecuteChanged);
     }
 }
